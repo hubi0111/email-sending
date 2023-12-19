@@ -83,15 +83,15 @@ def schedule_email(recipient, recipient_email, company_name, business_type, busi
 
 
 roles = {
-    1: "Investment Banking",
-    2: "Private Equity",
-    3: "Venture Capital",
-    4: "Venture Capital and Private Equity",
-    5: "Investment Management",
-    6: "Equity Research",
-    7: "Wealth Management",
-    8: "Investment",
-    9: "Other",
+    "1": "Investment Banking",
+    "2": "Private Equity",
+    "3": "Venture Capital",
+    "4": "Venture Capital and Private Equity",
+    "5": "Investment Management",
+    "6": "Equity Research",
+    "7": "Wealth Management",
+    "8": "Investment",
+    "9": "Other",
 }
 
 def run_scheduler():
@@ -119,7 +119,7 @@ try:
         business_type = input("Select the business type:\n1: Investment Banking\n2: Private Equity\n3: Venture Capital\n4: Venture Capital and Private Equity\n5: Investment Management\n6: Equity Research\n7: Wealth Management\n8: Investment\n9: Other\n")
         if business_type == 'cancel':
             continue
-        if int(business_type) != 9:
+        if business_type != 9:
             business_type = roles[business_type]
         else:
             business_type = input("Enter the business type: ")
