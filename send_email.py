@@ -8,11 +8,10 @@ import time
 import datetime
 import random
 import threading
-import pytz
 
 scheduler = sched.scheduler(time.time, time.sleep)
 
-def send_email_at_time(send_time, recipient, recipient_email, company_name, business_type, business_type_2, resume_file, additional_file):
+def send_email_at_time(recipient, recipient_email, company_name, business_type, business_type_2, resume_file, additional_file):
     sender_email = "ik254@cornell.edu"  # Replace with your Gmail address
     sender_password = "xwrr tiif egzo skes"  # Replace with your password or App Password
     smtp_server = "smtp.gmail.com"
@@ -62,24 +61,18 @@ def send_email_at_time(send_time, recipient, recipient_email, company_name, busi
     session.sendmail(sender_email, recipient_email, text)
     session.quit()
 
-def schedule_email(recipient, recipient_email, company_name, business_type, business_type_2, resume_file, additional_file):
-    eastern = pytz.timezone('US/Eastern')
-    current_time_eastern = datetime.datetime.now(eastern)
-    if 0 <= current_time_eastern.hour < 9:
-        schedule_date_eastern = current_time_eastern.replace(hour=9, minute=0, second=0, microsecond=0)
+def schedule_email(recipient, recipient_email, company_name, business_type, business_type_2, resume_file, additional_file, send_time):
+    hour = int(send_time.split(":")[0])
+    minute = int(send_time.split(":")[1])
+    current_time = datetime.datetime.now()
+    if 0 <= current_time.hour < 9:
+        schedule_time = current_time.replace(hour=hour, minute=minute, second=0, microsecond=0)
     else:
-        schedule_date_eastern = (current_time_eastern + datetime.timedelta(days=1)).replace(hour=9, minute=0, second=0, microsecond=0)
+        schedule_time = (current_time + datetime.timedelta(days=1)).replace(hour=hour, minute=minute, second=0, microsecond=0)
+    delay_seconds = (schedule_time - current_time).total_seconds()
 
-    send_time_eastern = schedule_date_eastern + datetime.timedelta(seconds=random.randint(0, 3600))
-
-    local_timezone = pytz.timezone('America/Los_Angeles')
-    send_time_local = send_time_eastern.astimezone(local_timezone)
-
-    current_time_local = datetime.datetime.now(local_timezone)
-    delay_seconds = (send_time_local - current_time_local).total_seconds()
-
-    scheduler.enter(delay_seconds, 1, send_email_at_time, (send_time_eastern, recipient, recipient_email, company_name, business_type, business_type_2, resume_file, additional_file))
-    print(f"Email to {recipient} scheduled for {send_time_eastern} Eastern Time.")
+    scheduler.enter(delay_seconds, 1, send_email_at_time, (recipient, recipient_email, company_name, business_type, business_type_2, resume_file, additional_file))
+    print(f"Email to {recipient} scheduled for {schedule_time} Pacific Time.")
 
 
 roles = {
@@ -126,11 +119,13 @@ try:
         business_type_2 = input("Enter the second business type if applicable: ")
         if business_type_2 == 'cancel':
             continue
+        send_time = input("Enter the send time (HH:MM) in Military PST: ")
+        if send_time == 'cancel':
+            continue
         resume_file = "Ivan_Kwong_Resume.pdf"  # Replace with the path to your resume file (assumes this file is in the same folder)
         additional_file = "Ivan_Kwong_Reference.pdf"  # Replace with the path to your additional file (assumes this file is in the same folder)
 
-
-        schedule_email(recipient, recipient_email, company_name, business_type, business_type_2, resume_file, additional_file)
+        schedule_email(recipient, recipient_email, company_name, business_type, business_type_2, resume_file, additional_file, send_time)
 
 except KeyboardInterrupt:
     print("Email scheduling stopped.")
