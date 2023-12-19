@@ -12,7 +12,7 @@ send the result to Ryan
 # How to use
 ssh goblinrum@wednesdays.ddns.net
 
-screen -r 66383
+screen -r 223247
 
 send some emails
 
