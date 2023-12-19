@@ -108,14 +108,24 @@ scheduler_thread.start()
 try:
     while True:
         recipient = input("Enter the recipient's name: ")
+        if recipient == 'cancel':
+            continue
         recipient_email = input("Enter the recipient's email: ")
+        if recipient_email == 'cancel':
+            continue
         company_name = input("Enter the companies name: ")
-        business_type = int(input("Select the business type:\n1: Investment Banking\n2: Private Equity\n3: Venture Capital\n4: Venture Capital and Private Equity\n5: Investment Management\n6: Equity Research\n7: Wealth Management\n8: Investment\n9: Other\n"))
-        if business_type != 9:
+        if company_name == 'cancel':
+            continue
+        business_type = input("Select the business type:\n1: Investment Banking\n2: Private Equity\n3: Venture Capital\n4: Venture Capital and Private Equity\n5: Investment Management\n6: Equity Research\n7: Wealth Management\n8: Investment\n9: Other\n")
+        if business_type == 'cancel':
+            continue
+        if int(business_type) != 9:
             business_type = roles[business_type]
         else:
             business_type = input("Enter the business type: ")
         business_type_2 = input("Enter the second business type if applicable: ")
+        if business_type_2 == 'cancel':
+            continue
         resume_file = "Ivan_Kwong_Resume.pdf"  # Replace with the path to your resume file (assumes this file is in the same folder)
         additional_file = "Ivan_Kwong_Reference.pdf"  # Replace with the path to your additional file (assumes this file is in the same folder)
 
